@@ -60,63 +60,65 @@ public class AVIFrames
         return getImage(frame).createImage();
     }
     
-    /**
-     * @author Chazz Young(0.0)
-     */
     public int getFrameCount()
     {
         return imstack.getSize();
     }
     
-    /**
-     * Returns a double array of int values to be used for tone volumes
-     * @param frame the frame number
-     * @return the volumes for each pixel
-     * @author Chazz Young(0.0)
-     */
-    public int[][] getPixelVolumes(int frame)
+    public int getRowHeight()
     {
-        ImageProcessor img = getImage(frame);
-        int[][] pixels = img.getIntArray();
+        return getImage(1).getWidth();
+    }
+    
+    public int getColumnHeight()
+    {
+        return getImage(1).getHeight();
+    }
+    
+    /**
+     * @return the colours from the center column of each frame with size
+     * [frame number][center columns height]
+     */
+    public int[][] getVerticalSTI()
+    {
+        final int x = getFrameCount(); //x is t over time
+        final int y = getColumnHeight(); //y is heigh tof the column
+        int[][] toReturn = new int[x][y];
+        ImageProcessor currImg = getImage(1);
+        int col = currImg.getWidth()/2;
         
-        //Round every pixel value  to a greyscale 8 but luminence
-        for(int i = 0; i < 64; i++){
-            for(int j = 0; j < 64; j++){
-                //Convert (grey) RGB to luminence
-                pixels[i][j] = convertToLuminence(pixels[i][j]);
+        for(int i = 1; i < x; i++){//for each frame = 1 to end, intentional
+            currImg = getImage(i);
+            for(int j = 0; j < y; j++){//For each column pixel value
+                toReturn[i - 1][j] = currImg.getPixel(col, j);
             }
         }
-        return pixels;
+        return toReturn;
     }
     
     /**
-     * This function converts an integer pixel value to a 0 to 100 luminence measure
-     * @param pixel the pixel value in sRGB format
-     * @return a luminence value between 0 and 100 scaled by 100/16
-     * @author Chazz Young(0./0)
+     * @return the colours from the center row of each frame with size
+     * [frame number][center columns height]
      */
-    private int convertToLuminence(int pixel)
+    public int[][] getHorizontalSTI()
     {
-        Color c = new Color(pixel);
-        double ans = (double)c.getRed() * 0.299; 
-        ans += (double)c.getGreen() * 0.587; 
-        ans += (double)c.getBlue() * 0.114;
-        ans *= 100.0/255.0; //ans is now 0 to 100
-        ans *= 16.0/100.0;//ans is now 0 to 16
-        pixel = (new Double(ans)).intValue();
-        pixel = (new Double((double)pixel * 100.0/16.0)).intValue();
-        return pixel;
+        final int x = getFrameCount(); //x is t over time
+        final int y = getRowHeight(); //y is heigh tof the column
+        int[][] toReturn = new int[x][y];
+        ImageProcessor currImg = getImage(1);
+        int row = currImg.getHeight()/2;
+        
+        for(int i = 1; i < x; i++){//for each frame = 1 to end, intentional
+            currImg = getImage(i);
+            for(int j = 0; j < y; j++){//For each row pixel value
+                toReturn[i - 1][j] = currImg.getPixel(row, j);
+            }
+        }
+        return toReturn;
     }
     
-    /**
-     * @author Chazz Young(0.0)
-     */
     public boolean opened()
     {
-        if(imstack != null){
-            return true;
-        }else{
-            return false;
-        }
+        return imstack != null;
     }
 }
