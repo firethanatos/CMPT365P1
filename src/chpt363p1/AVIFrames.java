@@ -8,6 +8,7 @@ package chpt363p1;
 
 import ij.ImageStack;
 import ij.process.ImageProcessor;
+import ij.process.ColorProcessor;
 import java.awt.Image;
 import java.awt.Color;
 
@@ -44,7 +45,7 @@ public class AVIFrames
             return null;
         }
         ImageProcessor img = imstack.getProcessor(frame);
-        img = img.resize(64, 64);
+        img = img.resize(32, 32); // 32 by 32
         return img;
     }
     
@@ -82,7 +83,7 @@ public class AVIFrames
     public int[][] getVerticalSTI()
     {
         final int x = getFrameCount(); //x is t over time
-        final int y = getColumnHeight(); //y is heigh tof the column
+        final int y = getColumnHeight(); //y is height of the column
         int[][] toReturn = new int[x][y];
         ImageProcessor currImg = getImage(1);
         int col = currImg.getWidth()/2;
@@ -103,7 +104,7 @@ public class AVIFrames
     public int[][] getHorizontalSTI()
     {
         final int x = getFrameCount(); //x is t over time
-        final int y = getRowHeight(); //y is heigh tof the column
+        final int y = getRowHeight(); //y is height of the column
         int[][] toReturn = new int[x][y];
         ImageProcessor currImg = getImage(1);
         int row = currImg.getHeight()/2;
@@ -115,6 +116,55 @@ public class AVIFrames
             }
         }
         return toReturn;
+    }
+    
+    // this method needs to be called for 2th frame to xth frame (last)
+    public void createColorHistogram(float r, float g)
+    {
+        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
+        int N = 1 + logbase2N;
+        
+        // let the parent array be of r, and the sub-array be of g
+        int[][] hist = new int[N][N];
+        
+        // r and g are in the interval [0, 1]
+        int qr = (int) r * logbase2N; // in the interval [0, 5]
+        int qg = (int) g * logbase2N; // in the interval [0, 5]
+        
+        // increment count
+        hist[qr][qg]++;
+        
+        
+        // fill the 2d array with r and g
+    }
+    
+    // this method needs to be called for every pixel in the image
+    public void replaceRGBbyChromacity(int pixel)
+    {
+        Color c = new Color(pixel);
+        int R = c.getRed();
+        int G = c.getGreen();
+        int B = c.getBlue();
+        
+        float r = 0;
+        float g = 0;
+        // ignore B
+        
+        // color must not be (0, 0, 0) to avoid divide-by-0
+        if (!isRGBblack(R, G, B)) 
+        {
+            r = R / (R + G + B);
+            g = G / (R + G + B);
+        }
+    }
+    
+    private boolean isRGBblack(int R, int G, int B)
+    {
+        if (R == 0 && G == 0 && B == 0)
+        {
+            return true;
+        }
+        return false;
     }
     
     public boolean opened()
