@@ -19,14 +19,12 @@ import javax.swing.JLabel;
  */
 public class Applet extends javax.swing.JFrame {
 
-    private ImageToSound its;   //Main program image
+    private AVIFrames frames;   //Main program image
     private int frameCount;     //Number of frames in the current AVI file
     private int currFrame;      //Current frame
     private Image currImg;      //Image to be displayed
-    private int[][] volumes;    //Volumes generated from its
     private JLabel  icon; //BufferedImage representation of the image
     private boolean fileOpened; //Flag to ensure a file has been opened before continuing
-    private boolean paused;     //Flag to test whether the option i spaused
 
     
     
@@ -39,7 +37,6 @@ public class Applet extends javax.swing.JFrame {
         currFrame = -1;
         currImg = null;
         fileOpened = false;
-        paused = true;
         //run();
         
     }
@@ -326,10 +323,10 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_FilePathTextFieldActionPerformed
 
     private void SelectFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectFileButtonActionPerformed
-        its = new ImageToSound();
-        fileOpened = its.opened();
+        frames = new AVIFrames();
+        fileOpened = frames.opened();
         if(fileOpened){//Set frame count and currFrame
-            frameCount = its.getFrameCount();
+            frameCount = frames.getFrameCount();
             currFrame = 1;
         }else{//Failed to open correctly, reset
             frameCount = -1;
@@ -338,14 +335,11 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_SelectFileButtonActionPerformed
 
     private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
-        paused = true;
+
     }//GEN-LAST:event_PauseButtonActionPerformed
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
-        if(fileOpened){
-            paused = false;
-            run();
-        }
+        
     }//GEN-LAST:event_PlayButtonActionPerformed
 
     /**
@@ -391,30 +385,12 @@ public class Applet extends javax.swing.JFrame {
      */
     private void displayImage(int frame)
     {
-        currImg = its.getImageToPrint(frame).getScaledInstance(256, 256,0);
-        volumes = its.getPixelVolumes(frame);
+        currImg = frames.getImageToPrint(frame).getScaledInstance(256, 256,0);
+        
         //ImageLabel.setIcon(new ImageIcon(currImg));
     }
     
-    private void run()
-    {
-        while(!paused){
-            if(currFrame == frameCount){//Reset
-                paused = true;
-                currFrame = 1;
-                break;
-            }else{
-                displayImage(currFrame);
-               // boolean success = playSounds();
-                try{
-                    //Thread.sleep(1000);
-                }catch(Exception e){
-                    System.out.println("Failed at thread.");
-                }
-                currFrame++;
-            }
-        }   
-    }
+   
    
     
 
