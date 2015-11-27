@@ -62,18 +62,18 @@ public class Applet extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TextPane = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         FilePathTextField = new javax.swing.JTextField();
         SelectFileButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        PauseButton = new javax.swing.JButton();
-        PlayButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        ImagePanel = new javax.swing.JPanel();
+        HorizontalSTIButton = new javax.swing.JButton();
+        VerticalSTIButton = new javax.swing.JButton();
+        ImageLabel = new javax.swing.JLabel();
+        HoriHistSTIButton = new javax.swing.JButton();
+        VertHistSTIButton = new javax.swing.JButton();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -183,8 +183,6 @@ public class Applet extends javax.swing.JFrame {
 
         jLabel1.setText("Values Of Generated Pixels");
 
-        jLabel2.setText("Generated Frame Image");
-
         FilePathTextField.setEnabled(false);
         FilePathTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -201,53 +199,45 @@ public class Applet extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("CMPT 365 A2 - Video To Sound Generator");
+        jLabel3.setText("CMPT 365 P1 - Video Transition Finder");
 
-        PauseButton.setText("Pause");
-        PauseButton.addActionListener(new java.awt.event.ActionListener() {
+        jLabel4.setText("Chazz Young & Brian Pak");
+
+        jLabel5.setText("Date Completed: ");
+
+        jLabel6.setText("chazzy@sfu.ca, ");
+
+        jLabel7.setText("CMPT 365 Project");
+
+        HorizontalSTIButton.setText("Horizontal STI");
+        HorizontalSTIButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PauseButtonActionPerformed(evt);
+                HorizontalSTIButtonActionPerformed(evt);
             }
         });
 
-        PlayButton.setText("Play");
-        PlayButton.addActionListener(new java.awt.event.ActionListener() {
+        VerticalSTIButton.setText("Vertical STI");
+        VerticalSTIButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PlayButtonActionPerformed(evt);
+                VerticalSTIButtonActionPerformed(evt);
             }
         });
 
-        jLabel4.setText("Chazz Young");
+        ImageLabel.setText(" ");
 
-        jLabel5.setText("Date Completed: October 26, 2015");
+        HoriHistSTIButton.setText("Horizontal Histogram STI");
+        HoriHistSTIButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HoriHistSTIButtonActionPerformed(evt);
+            }
+        });
 
-        jLabel6.setText("chazzy@sfu.ca");
-
-        jLabel7.setText("CMPT 365 Assignment 2");
-
-        javax.swing.GroupLayout ImagePanelLayout = new javax.swing.GroupLayout(ImagePanel);
-        ImagePanel.setLayout(ImagePanelLayout);
-        ImagePanelLayout.setHorizontalGroup(
-            ImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        ImagePanelLayout.setVerticalGroup(
-            ImagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ImagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        VertHistSTIButton.setText("Vertical Histogram STI");
+        VertHistSTIButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VertHistSTIButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -258,22 +248,9 @@ public class Applet extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(15, 15, 15)
-                                .addComponent(PauseButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(PlayButton))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(FilePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(SelectFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(SelectFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -281,7 +258,24 @@ public class Applet extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6)))
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(HorizontalSTIButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(VerticalSTIButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(HoriHistSTIButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(VertHistSTIButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -294,22 +288,22 @@ public class Applet extends javax.swing.JFrame {
                     .addComponent(FilePathTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SelectFileButton, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PlayButton)
-                            .addComponent(PauseButton))
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(HorizontalSTIButton)
+                    .addComponent(VerticalSTIButton)
+                    .addComponent(HoriHistSTIButton)
+                    .addComponent(VertHistSTIButton))
+                .addGap(37, 37, 37)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                    .addComponent(ImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)))
@@ -334,13 +328,21 @@ public class Applet extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SelectFileButtonActionPerformed
 
-    private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
+    private void HorizontalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HorizontalSTIButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_HorizontalSTIButtonActionPerformed
 
-    }//GEN-LAST:event_PauseButtonActionPerformed
+    private void VerticalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerticalSTIButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_VerticalSTIButtonActionPerformed
 
-    private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
-        
-    }//GEN-LAST:event_PlayButtonActionPerformed
+    private void HoriHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HoriHistSTIButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_HoriHistSTIButtonActionPerformed
+
+    private void VertHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VertHistSTIButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_VertHistSTIButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -396,11 +398,13 @@ public class Applet extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField FilePathTextField;
-    private javax.swing.JPanel ImagePanel;
-    private javax.swing.JButton PauseButton;
-    private javax.swing.JButton PlayButton;
+    private javax.swing.JButton HoriHistSTIButton;
+    private javax.swing.JButton HorizontalSTIButton;
+    private javax.swing.JLabel ImageLabel;
     private javax.swing.JButton SelectFileButton;
     private javax.swing.JTextArea TextPane;
+    private javax.swing.JButton VertHistSTIButton;
+    private javax.swing.JButton VerticalSTIButton;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JFrame jFrame2;
     private javax.swing.JFrame jFrame3;
@@ -411,13 +415,11 @@ public class Applet extends javax.swing.JFrame {
     private javax.swing.JFrame jFrame8;
     private javax.swing.JFrame jFrame9;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
