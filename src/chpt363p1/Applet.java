@@ -5,13 +5,13 @@
  */
 package chpt363p1;
 
+import java.awt.BorderLayout;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -59,6 +59,7 @@ public class Applet extends javax.swing.JFrame {
         jFrame7 = new javax.swing.JFrame();
         jFrame8 = new javax.swing.JFrame();
         jFrame9 = new javax.swing.JFrame();
+        jInternalFrame1 = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         TextPane = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -71,9 +72,9 @@ public class Applet extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         HorizontalSTIButton = new javax.swing.JButton();
         VerticalSTIButton = new javax.swing.JButton();
-        ImageLabel = new javax.swing.JLabel();
         HoriHistSTIButton = new javax.swing.JButton();
         VertHistSTIButton = new javax.swing.JButton();
+        ImageLabel = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -174,6 +175,19 @@ public class Applet extends javax.swing.JFrame {
             .addGap(0, 300, Short.MAX_VALUE)
         );
 
+        jInternalFrame1.setVisible(true);
+
+        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
+        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
+        jInternalFrame1Layout.setHorizontalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jInternalFrame1Layout.setVerticalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         TextPane.setColumns(20);
@@ -223,8 +237,6 @@ public class Applet extends javax.swing.JFrame {
             }
         });
 
-        ImageLabel.setText(" ");
-
         HoriHistSTIButton.setText("Horizontal Histogram STI");
         HoriHistSTIButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -260,14 +272,6 @@ public class Applet extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1)))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(HorizontalSTIButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(VerticalSTIButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -275,7 +279,15 @@ public class Applet extends javax.swing.JFrame {
                         .addComponent(HoriHistSTIButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(VertHistSTIButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane1))
+                            .addComponent(jLabel1))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -297,8 +309,8 @@ public class Applet extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
-                    .addComponent(ImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -329,7 +341,18 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_SelectFileButtonActionPerformed
 
     private void HorizontalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HorizontalSTIButtonActionPerformed
-        // TODO add your handling code here:
+        TextPane.append("Printing horizontal STI");
+        int[][] horiSTI = frames.getHorizontalSTI();
+        currImg = frames.pixels2img(horiSTI);
+        currImg = currImg.getScaledInstance(256, 256, 256);
+        //ImagePanel.setLayout(null);
+        ImageIcon img = new ImageIcon();
+        img.setImage(currImg);
+        ImageLabel.setIcon(img);
+        validate();
+        
+        TextPane.append("Printed!");
+        
     }//GEN-LAST:event_HorizontalSTIButtonActionPerformed
 
     private void VerticalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerticalSTIButtonActionPerformed
@@ -414,6 +437,7 @@ public class Applet extends javax.swing.JFrame {
     private javax.swing.JFrame jFrame7;
     private javax.swing.JFrame jFrame8;
     private javax.swing.JFrame jFrame9;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
