@@ -8,9 +8,9 @@ package chpt363p1;
 
 import ij.ImageStack;
 import ij.process.ImageProcessor;
-import ij.process.ColorProcessor;
 import java.awt.Image;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 /**
  * This class will contain the main contents for translating images into sound as described in the comments
@@ -118,7 +118,12 @@ public class AVIFrames
         return toReturn;
     }
     
-    // this method needs to be called for 2th frame to xth frame (last)
+    /**
+     * this method needs to be called for 2th frame to xth frame (last)
+     * @param r
+     * @param g 
+     * @author Brian Pak(1.0)
+     */
     public void createColorHistogram(float r, float g)
     {
         int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
@@ -128,8 +133,10 @@ public class AVIFrames
         int[][] hist = new int[N][N];
         
         // r and g are in the interval [0, 1]
-        int qr = (int) r * logbase2N; // in the interval [0, 5]
-        int qg = (int) g * logbase2N; // in the interval [0, 5]
+        /* Added disambiguating brackets, otherwise the int typecast would only 
+           apply to r and g*/
+        int qr = (int)(r * logbase2N); // in the interval [0, 5]
+        int qg = (int)(g * logbase2N); // in the interval [0, 5]
         
         // increment count
         hist[qr][qg]++;
@@ -138,7 +145,36 @@ public class AVIFrames
         // fill the 2d array with r and g
     }
     
-    // this method needs to be called for every pixel in the image
+    /**
+     * Taken from http://stackoverflow.com/questions/13391404/create-image-from-2d-color-array
+     * @param pixels the 2d int array of pixels
+     * @return the image representation of hte pixels
+     */
+    public BufferedImage pixels2img(int[][] pixels)
+    {
+        // Initialize Color[][] however you were already doing so.
+        Color c;
+
+        // Initialize BufferedImage, assuming Color[][] is already properly populated.
+        BufferedImage bufferedImage = new BufferedImage(pixels.length, pixels[0].length,
+        BufferedImage.TYPE_INT_RGB);
+
+        // Set each pixel of the BufferedImage to the color from the Color[][].
+        for (int x = 0; x < pixels.length; x++) {
+            for (int y = 0; y < pixels[x].length; y++) {
+                c = new Color(pixels[x][y]);
+                    bufferedImage.setRGB(x, y, c.getRGB());
+            }
+        }
+        return bufferedImage;
+    }
+    
+    
+    /**
+     * // this method needs to be called for every pixel in the image
+     * @param pixel 
+     * @author Brian Pak(1.0)
+     */
     public void replaceRGBbyChromacity(int pixel)
     {
         Color c = new Color(pixel);
@@ -153,8 +189,9 @@ public class AVIFrames
         // color must not be (0, 0, 0) to avoid divide-by-0
         if (!isRGBblack(R, G, B)) 
         {
-            r = R / (R + G + B);
-            g = G / (R + G + B);
+            //Added float typecast as Java has weird integer division policies
+            r = R / (float)(R + G + B);
+            g = G / (float)(R + G + B);
         }
     }
     
