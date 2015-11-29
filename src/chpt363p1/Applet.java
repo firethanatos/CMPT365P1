@@ -192,10 +192,9 @@ public class Applet extends javax.swing.JFrame {
 
         TextPane.setColumns(20);
         TextPane.setRows(5);
-        TextPane.setText("..Failed to work correctly");
         jScrollPane1.setViewportView(TextPane);
 
-        jLabel1.setText("Values Of Generated Pixels");
+        jLabel1.setText("Console");
 
         FilePathTextField.setEnabled(false);
         FilePathTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -219,7 +218,7 @@ public class Applet extends javax.swing.JFrame {
 
         jLabel5.setText("Date Completed: ");
 
-        jLabel6.setText("chazzy@sfu.ca, ");
+        jLabel6.setText("chazzy@sfu.ca, bpak@sfu.ca");
 
         jLabel7.setText("CMPT 365 Project");
 
@@ -282,12 +281,12 @@ public class Applet extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jScrollPane1))
-                            .addComponent(jLabel1))))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,7 +340,7 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_SelectFileButtonActionPerformed
 
     private void HorizontalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HorizontalSTIButtonActionPerformed
-        TextPane.append("Printing horizontal STI");
+        TextPane.append("Printing horizontal STI\n");
         int[][] horiSTI = frames.getHorizontalSTI();
         currImg = frames.pixels2img(horiSTI);
         currImg = currImg.getScaledInstance(256, 256, 256);
@@ -351,12 +350,21 @@ public class Applet extends javax.swing.JFrame {
         ImageLabel.setIcon(img);
         validate();
         
-        TextPane.append("Printed!");
-        
+        TextPane.append("Printed!\n");
     }//GEN-LAST:event_HorizontalSTIButtonActionPerformed
 
     private void VerticalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerticalSTIButtonActionPerformed
-        // TODO add your handling code here:
+        TextPane.append("Printing vertical STI\n");
+        int[][] vertSTI = frames.getVerticalSTI();
+        currImg = frames.pixels2img(vertSTI);
+        currImg = currImg.getScaledInstance(256, 256, 256);
+        //ImagePanel.setLayout(null);
+        ImageIcon img = new ImageIcon();
+        img.setImage(currImg);
+        ImageLabel.setIcon(img);
+        validate();
+        
+        TextPane.append("Printed!\n");
     }//GEN-LAST:event_VerticalSTIButtonActionPerformed
 
     private void HoriHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HoriHistSTIButtonActionPerformed
@@ -365,6 +373,11 @@ public class Applet extends javax.swing.JFrame {
 
     private void VertHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VertHistSTIButtonActionPerformed
         // TODO add your handling code here:
+        TextPane.append("Calculating vertical Histogram STI\n");
+        int[][][] hist = frames.getVerticalSTIHistogram();
+        int I = frames.getHistogramIntersection(hist);
+        
+        TextPane.append("" + I);
     }//GEN-LAST:event_VertHistSTIButtonActionPerformed
 
     /**
