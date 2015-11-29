@@ -11,6 +11,7 @@ import ij.process.ImageProcessor;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
  * This class will contain the main contents for translating images into sound as described in the comments
@@ -119,33 +120,6 @@ public class AVIFrames
     }
     
     /**
-     * this method needs to be called for 2th frame to xth frame (last)
-     * @param r
-     * @param g 
-     * @author Brian Pak(1.0)
-     */
-    public void createColorHistogram(float r, float g)
-    {
-        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
-        int N = 1 + logbase2N;
-        
-        // let the parent array be of r, and the sub-array be of g
-        int[][] hist = new int[N][N];
-        
-        // r and g are in the interval [0, 1]
-        /* Added disambiguating brackets, otherwise the int typecast would only 
-           apply to r and g*/
-        int qr = (int)(r * logbase2N); // in the interval [0, 5]
-        int qg = (int)(g * logbase2N); // in the interval [0, 5]
-        
-        // increment count
-        hist[qr][qg]++;
-        
-        
-        // fill the 2d array with r and g
-    }
-    
-    /**
      * Taken from http://stackoverflow.com/questions/13391404/create-image-from-2d-color-array
      * @param pixels the 2d int array of pixels
      * @return the image representation of hte pixels
@@ -168,31 +142,151 @@ public class AVIFrames
         }
         return bufferedImage;
     }
-    
-    
+        
     /**
-     * // this method needs to be called for every pixel in the image
-     * @param pixel 
+     * @param histogram
+     * @param r
+     * @param g
+     * @return histogram of every frame
      * @author Brian Pak(1.0)
      */
-    public void replaceRGBbyChromacity(int pixel)
+    public int[][] fillHistogram(int[][] histogram, float r, float g)
     {
-        Color c = new Color(pixel);
-        int R = c.getRed();
-        int G = c.getGreen();
-        int B = c.getBlue();
+        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
         
-        float r = 0;
-        float g = 0;
-        // ignore B
+        // r and g are in the interval [0, 1]
+        /* Added disambiguating brackets, otherwise the int typecast would only 
+           apply to r and g*/
+        int qr = (int)(r * logbase2N); // in the interval [0, 5]
+        int qg = (int)(g * logbase2N); // in the interval [0, 5]
         
-        // color must not be (0, 0, 0) to avoid divide-by-0
-        if (!isRGBblack(R, G, B)) 
-        {
-            //Added float typecast as Java has weird integer division policies
-            r = R / (float)(R + G + B);
-            g = G / (float)(R + G + B);
+        // increment count
+        histogram[qr][qg]++;
+        
+        return histogram;
+    }
+    
+    public int getHistogramIntersection(int[][][] STIHistogram) {
+        final int x = getRowHeight();
+        final int y = getColumnHeight();
+        final int z = getFrameCount();
+        
+        int I = 0;
+        
+        for (int k = 2; k < z; k++) {
+            int[][] hist1 = STIHistogram[k - 1];
+            int[][] hist2 = STIHistogram[k];
+                    
+            // for every row
+            for (int i = 0; i < x; i++) {
+                
+                // for every column
+                for (int j = 0; j < y; j++) {
+                    if (hist1[i][j] < hist2[i][i]) {
+                        I = I + hist2[i][j];
+                    }
+                    else {
+                        I = I + hist1[i][j];
+                    }
+                }
+            }
         }
+        return I;
+    }
+    
+    /**
+     * build vertical STI histogram
+     * @author Brian Pak(1.0)
+     */
+    public int[][][] getVerticalSTIHistogram()
+    {
+        final int x = getRowHeight();
+        final int y = getColumnHeight();
+        final int z = getFrameCount();
+        
+        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
+        int N = logbase2N + 1;
+        
+        int[][][] toReturn = new int[z][N][N];
+        ImageProcessor currImg = getImage(1);
+        int col = currImg.getWidth()/2;
+        
+        float[][][] rValues = chromacity("r");
+        float[][][] gValues = chromacity("g");
+        
+        for (int k = 1; k < z; k++) {
+            int[][] histogram = new int[N][N];
+                    
+            // for every row
+            for (int i = 0; i < x; i++) {
+                
+                // for every column
+                for (int j = 0; j < y; j++) {
+                    if (j == col) {
+                        float r = rValues[k][i][j];
+                        float g = gValues[k][i][j];
+                        
+                        histogram = fillHistogram(histogram, r, g);
+                    }
+                }
+            }
+            toReturn[k] = histogram;
+        }
+        return toReturn;
+    } 
+    
+    /**
+     * convert extract chromacity r or g out of RGB
+     * @author Brian Pak(1.0)
+     */
+    public float[][][] chromacity(String color)
+    {
+        final int x = getRowHeight();
+        final int y = getColumnHeight();
+        final int z = getFrameCount();
+        
+        float[][][] toReturn = new float[z][x][y];
+
+        ImageProcessor currImg;
+        
+        // for every frame
+        for (int k = 1; k < z; k++) {
+            currImg = getImage(k);
+            
+            // for every row
+            for (int i = 0; i < x; i++) {
+                
+                // for every column
+                for (int j = 0; j < y; j++){
+                    int pixel = currImg.getPixel(x, y);
+                    
+                    Color c = new Color(pixel);
+                    int R = c.getRed();
+                    int G = c.getGreen();
+                    int B = c.getBlue();
+        
+                    float r = 0;
+                    float g = 0;
+                    // ignore B
+        
+                    // color must not be (0, 0, 0) to avoid divide-by-0
+                    if (!isRGBblack(R, G, B)) 
+                    {
+                        //Added float typecast as Java has weird integer division policies
+                        r = R / (float)(R + G + B);
+                        g = G / (float)(R + G + B);
+                    }
+                    
+                    if (color.equals("r")) {
+                        toReturn[k - 1][i][j] = r;
+                    }
+                    else if (color.equals("g")) {
+                        toReturn[k - 1][i][j] = g;
+                    }
+                }
+            }
+        }
+        return toReturn;
     }
     
     private boolean isRGBblack(int R, int G, int B)
