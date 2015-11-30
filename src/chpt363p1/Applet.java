@@ -373,11 +373,11 @@ public class Applet extends javax.swing.JFrame {
 
     private void VertHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VertHistSTIButtonActionPerformed
         // TODO add your handling code here:
-        TextPane.append("Calculating vertical Histogram STI\n");
+       /* TextPane.append("Calculating vertical Histogram STI\n");
         int[][][] hist = frames.getVerticalSTIHistogram();
         int I = frames.getHistogramIntersection(hist);
         
-        TextPane.append("" + I);
+        TextPane.append("" + I);*/
     }//GEN-LAST:event_VertHistSTIButtonActionPerformed
 
     /**

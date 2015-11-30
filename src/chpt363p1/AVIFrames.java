@@ -144,13 +144,14 @@ public class AVIFrames
     }
         
     /**
-     * @param histogram
-     * @param r
-     * @param g
+     * @param histogram the current histogram of size [N + 1][N + 1] where n
+     *                  equals log_2 (image height)
+     * @param r the normalized float value of r for that pixel
+     * @param g the normalized float value of g for that pixel
      * @return histogram of every frame
      * @author Brian Pak(1.0)
      */
-    public int[][] fillHistogram(int[][] histogram, float r, float g)
+    private int[][] fillHistogram(int[][] histogram, float r, float g)
     {
         int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
         
@@ -166,7 +167,26 @@ public class AVIFrames
         return histogram;
     }
     
-    public int getHistogramIntersection(int[][][] STIHistogram) {
+    /**
+     * 
+     * @return an image with size [frame][column height]
+     */
+    public int[][] getVerticalHistDifferences()
+    {
+        int[][] toReturn; 
+        //For each frame
+            //For each column
+                //Get the I value and place in toReturn 
+        return null;      
+    }
+    
+    
+    /**
+     * 
+     * @param STIHistogram the histograms for a given row or column
+     * @return I, a number between 0 and 1
+     */
+    private int getHistogramIntersection(int[][][] STIHistogram) {
         final int x = getRowHeight();
         final int y = getColumnHeight();
         final int z = getFrameCount();
@@ -177,12 +197,10 @@ public class AVIFrames
             int[][] hist1 = STIHistogram[k - 1];
             int[][] hist2 = STIHistogram[k];
                     
-            // for every row
-            for (int i = 0; i < x; i++) {
-                
-                // for every column
-                for (int j = 0; j < y; j++) {
-                    if (hist1[i][j] < hist2[i][i]) {
+            
+            for (int i = 0; i < x; i++) {// for every row
+                for (int j = 0; j < y; j++) {// for every column
+                    if (hist1[i][j] < hist2[i][j]) {
                         I = I + hist2[i][j];
                     }
                     else {
@@ -195,10 +213,13 @@ public class AVIFrames
     }
     
     /**
+     * Now accepts column(Chazz Young)
      * build vertical STI histogram
+     * @param col The column to calculate the histograms 
+     * @return the histograms for each frame with the given column
      * @author Brian Pak(1.0)
      */
-    public int[][][] getVerticalSTIHistogram()
+    public int[][][] getVerticalSTIHistograms(int col)
     {
         final int x = getRowHeight();
         final int y = getColumnHeight();
@@ -208,26 +229,19 @@ public class AVIFrames
         int N = logbase2N + 1;
         
         int[][][] toReturn = new int[z][N][N];
-        ImageProcessor currImg = getImage(1);
-        int col = currImg.getWidth()/2;
         
         float[][][] rValues = chromacity("r");
         float[][][] gValues = chromacity("g");
         
-        for (int k = 1; k < z; k++) {
+        for (int k = 1; k <= z; k++) {
             int[][] histogram = new int[N][N];
-                    
-            // for every row
-            for (int i = 0; i < x; i++) {
-                
-                // for every column
-                for (int j = 0; j < y; j++) {
-                    if (j == col) {
-                        float r = rValues[k][i][j];
-                        float g = gValues[k][i][j];
+               
+            for (int i = 0; i < x; i++) {// for every row
+                for (int j = 0; j < y; j++) {// for every column
+                    float r = rValues[k][i][col];
+                    float g = gValues[k][i][col];
                         
-                        histogram = fillHistogram(histogram, r, g);
-                    }
+                    histogram = fillHistogram(histogram, r, g);   
                 }
             }
             toReturn[k] = histogram;
@@ -236,10 +250,11 @@ public class AVIFrames
     } 
     
     /**
-     * convert extract chromacity r or g out of RGB
+     * convert chromaticity r or g out of RGB
+     * @param color either "r" or "g"
      * @author Brian Pak(1.0)
      */
-    public float[][][] chromacity(String color)
+    private float[][][] chromacity(String color)
     {
         final int x = getRowHeight();
         final int y = getColumnHeight();
@@ -250,14 +265,11 @@ public class AVIFrames
         ImageProcessor currImg;
         
         // for every frame
-        for (int k = 1; k < z; k++) {
+        for (int k = 1; k <= z; k++) {
             currImg = getImage(k);
             
-            // for every row
-            for (int i = 0; i < x; i++) {
-                
-                // for every column
-                for (int j = 0; j < y; j++){
+            for (int i = 0; i < x; i++) {// for every row
+                for (int j = 0; j < y; j++){// for every column
                     int pixel = currImg.getPixel(x, y);
                     
                     Color c = new Color(pixel);
@@ -270,11 +282,10 @@ public class AVIFrames
                     // ignore B
         
                     // color must not be (0, 0, 0) to avoid divide-by-0
-                    if (!isRGBblack(R, G, B)) 
-                    {
+                    if (!isRGBblack(R, G, B)){
                         //Added float typecast as Java has weird integer division policies
-                        r = R / (float)(R + G + B);
-                        g = G / (float)(R + G + B);
+                        r = (float)R / (float)(R + G + B);
+                        g = (float)G / (float)(R + G + B);
                     }
                     
                     if (color.equals("r")) {
@@ -291,11 +302,8 @@ public class AVIFrames
     
     private boolean isRGBblack(int R, int G, int B)
     {
-        if (R == 0 && G == 0 && B == 0)
-        {
-            return true;
-        }
-        return false;
+        //Replaced by Netbeans
+        return (R == 0 && G == 0 && B == 0);
     }
     
     public boolean opened()
