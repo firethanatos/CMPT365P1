@@ -168,8 +168,9 @@ public class AVIFrames
     }
     
     /**
-     * INCOMPLETE!!!!!!!!
+     * 
      * @return an image with size [column total][frame]
+     * @author Chazz Young(1.0)
      */
     public int[][] getVerticalHistDifferences()
     {
@@ -181,16 +182,33 @@ public class AVIFrames
         final int g = tmp[0][0].length;
         
         //Array of column images
-        float[][][][] hists = new float[colTotal][frame][r][g];
+        float[][][][] hists = new float[colTotal][frame - 1][r][g];
         hists[0] = tmp;
         for(int i = 1; i < colTotal; i++){//For each column, get histogram
             hists[i] = normalize(getVerticalSTIHistograms(i));
         }
-        int[][] toReturn = new int[colTotal][frame]; 
+        //Get the I-values for each column and frame
+        float[][] greyLevel = new float[colTotal][frame - 1]; 
+        for(int i = 0; i < colTotal; i++){//For each column
+            for(int j = 0; j < frame - 1; j++){///For each PAIR of frames
+                float hist1[][] = hists[i][j];
+                float hist2[][] = hists[i + 1][j];
+                greyLevel[i][j] = getHistogramIntersection(hist1, hist2);
+            }
+        }
+        
+        //Convert the i-values to a grey color
+        int[][] toReturn = new int[colTotal][frame - 1];
+        for(int i = 0; i < colTotal; i++){//For each column
+            for(int j = 0; j < frame - 1; j++){//For each frame
+                float f = greyLevel[i][j];
+                Color c = new Color(f, f, f);
+                toReturn[i][j] = c.getRGB();
+            }
+        }
                 //Get the I value and place in toReturn 
-        return null;      
+        return toReturn;      
     }
-    
     
     /**
      * 
@@ -199,7 +217,7 @@ public class AVIFrames
      * @return I, the min addition betwen hist1 and hist2, (range 0 to 1)
      *         I ~=1 if similar, ~0 if not
      */
-    private float getHistogramIntersection(int[][] hist1, int[][] hist2) 
+    private float getHistogramIntersection(float[][] hist1, float[][] hist2) 
     {
         final int x = hist1.length;
         final int y = hist1[0].length;
