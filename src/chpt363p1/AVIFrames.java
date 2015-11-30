@@ -194,32 +194,24 @@ public class AVIFrames
     
     /**
      * 
-     * @param STIHistogram the histograms for a given row or column
-     * @return I, a number between 0 and 1
+     * @param hist1 the normalized histograms for a given row or column
+     * @param hist2 the normalized histograms for the frame after hist1
+     * @return I, the min addition betwen hist1 and hist2, (range 0 to 1)
+     *         I ~=1 if similar, ~0 if not
      */
-    private int getHistogramIntersection(int[][][] STIHistogram) {
-        final int x = getRowHeight();
-        final int y = getColumnHeight();
-        final int z = getFrameCount();
+    private float getHistogramIntersection(int[][] hist1, int[][] hist2) 
+    {
+        final int x = hist1.length;
+        final int y = hist1[0].length;
         
-        int I = 0;
+        float I = 0;
         
-        for (int k = 2; k < z; k++) {
-            int[][] hist1 = STIHistogram[k - 1];
-            int[][] hist2 = STIHistogram[k];
-                    
-            
-            for (int i = 0; i < x; i++) {// for every row
-                for (int j = 0; j < y; j++) {// for every column
-                    if (hist1[i][j] < hist2[i][j]) {
-                        I = I + hist2[i][j];
-                    }
-                    else {
-                        I = I + hist1[i][j];
-                    }
-                }
+        for (int i = 0; i < x; i++) {// for every row
+            for (int j = 0; j < y; j++) {// for every column
+                I += Math.min(hist1[i][j], hist2[i][j]);
             }
         }
+            
         return I;
     }
     
