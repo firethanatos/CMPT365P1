@@ -5,13 +5,9 @@
  */
 package chpt363p1;
 
-import java.awt.BorderLayout;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  *
@@ -416,16 +412,6 @@ public class Applet extends javax.swing.JFrame {
                 new Applet().setVisible(true);
             }
         });
-    }
-    /**
-     * INCOMPLETE!!!
-     * @param frame the frame to generate the image for
-     */
-    private void displayImage(int frame)
-    {
-        currImg = frames.getImageToPrint(frame).getScaledInstance(256, 256,0);
-        
-        //ImageLabel.setIcon(new ImageIcon(currImg));
     }
     
    
