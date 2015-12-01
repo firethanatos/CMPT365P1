@@ -8,10 +8,8 @@ package chpt363p1;
 
 import ij.ImageStack;
 import ij.process.ImageProcessor;
-import java.awt.Image;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 /**
  * This class will contain the main contents for translating images into sound as described in the comments
@@ -24,7 +22,7 @@ import java.util.Arrays;
 public class AVIFrames
 {
     private final AVI_Reader reader;
-    private ImageStack imstack;
+    private final ImageStack imstack;
     
     public AVIFrames()
     {
@@ -33,49 +31,9 @@ public class AVIFrames
         imstack = reader.getStack();     
     }
     
-    /**
-     * Get internal ImageProcessor image for manipulation
-     * @param frame the frame number
-     * @return the image as an ImageProcessor
-     * #author Chazz Young(0.0)
-     */
-    private ImageProcessor getImage(int frame)
-    {
-        if(frame > getFrameCount()){
-            System.err.println("Error, frame " + frame + " is larger than the number of frames.");
-            return null;
-        }
-        ImageProcessor img = imstack.getProcessor(frame);
-        img = img.resize(32, 32); // 32 by 32
-        return img;
-    }
     
-    /**
-     * Returns the AWT image to print  in the sample frame
-     * @param frame the frame number 
-     * @return The corresponding frame as an AWT image
-     * @author Chazz Young(0.0)
-     */
-    public Image getImageToPrint(int frame)
-    {
-        if(frame < 1 || frame > getFrameCount()){return null;}
-        return getImage(frame).createImage();
-    }
     
-    public int getFrameCount()
-    {
-        return imstack.getSize();
-    }
     
-    public int getRowHeight()
-    {
-        return getImage(1).getWidth();
-    }
-    
-    public int getColumnHeight()
-    {
-        return getImage(1).getHeight();
-    }
     
     /**
      * @return the colours from the center column of each frame with size
@@ -101,6 +59,7 @@ public class AVIFrames
     /**
      * @return the colours from the center row of each frame with size
      * [frame number][center columns height]
+     * @author Brian Pak, Chazz Young(1.0)
      */
     public int[][] getHorizontalSTI()
     {
@@ -117,30 +76,6 @@ public class AVIFrames
             }
         }
         return toReturn;
-    }
-    
-    /**
-     * Taken from http://stackoverflow.com/questions/13391404/create-image-from-2d-color-array
-     * @param pixels the 2d int array of pixels
-     * @return the image representation of hte pixels
-     */
-    public BufferedImage pixels2img(int[][] pixels)
-    {
-        // Initialize Color[][] however you were already doing so.
-        Color c;
-
-        // Initialize BufferedImage, assuming Color[][] is already properly populated.
-        BufferedImage bufferedImage = new BufferedImage(pixels.length, pixels[0].length,
-        BufferedImage.TYPE_INT_RGB);
-
-        // Set each pixel of the BufferedImage to the color from the Color[][].
-        for (int x = 0; x < pixels.length; x++) {
-            for (int y = 0; y < pixels[x].length; y++) {
-                c = new Color(pixels[x][y]);
-                    bufferedImage.setRGB(x, y, c.getRGB());
-            }
-        }
-        return bufferedImage;
     }
         
     /**
@@ -169,10 +104,11 @@ public class AVIFrames
     
     /**
      * 
+     * @param thresh if threshhold is true
      * @return an image with size [column total][frame]
      * @author Chazz Young(1.0)
      */
-    public int[][] getVerticalHistDifferences()
+    public int[][] getVerticalHistDifferences(boolean thresh)
     {
         //Get dimensions
         final int colTotal = getRowHeight(); //rowHeight = number of columns
@@ -187,6 +123,7 @@ public class AVIFrames
         for(int i = 1; i < colTotal; i++){//For each column, get histogram
             hists[i] = normalize(getVerticalSTIHistograms(i));
         }
+        
         //Get the I-values for each column and frame
         float[][] greyLevel = new float[colTotal][frame - 1]; 
         for(int i = 0; i < colTotal; i++){//For each column
@@ -197,17 +134,51 @@ public class AVIFrames
             }
         }
         
-        //Convert the i-values to a grey color
+        Color white = new Color(255, 255, 255);
+        Color black = new Color(0, 0, 0);
+        
+        //Convert the i-values to a grey color, or black / white if threshhold
         int[][] toReturn = new int[colTotal][frame - 1];
         for(int i = 0; i < colTotal; i++){//For each column
             for(int j = 0; j < frame - 1; j++){//For each frame
                 float f = greyLevel[i][j];
-                Color c = new Color(f, f, f);
+                float t = 0.8f; //threshhold
+                Color c;
+                if(thresh){//If we want to normalize by threshhold
+                    if(f <= t){c = white;}else{c = black;}
+                }else{
+                    c = new Color(f, f, f);
+                }
+                
                 toReturn[i][j] = c.getRGB();
             }
         }
                 //Get the I value and place in toReturn 
         return toReturn;      
+    }
+    
+    /**
+     * Taken from http://stackoverflow.com/questions/13391404/create-image-from-2d-color-array
+     * @param pixels the 2d int array of pixels
+     * @return the image representation of hte pixels
+     */
+    public BufferedImage pixels2img(int[][] pixels)
+    {
+        // Initialize Color[][] however you were already doing so.
+        Color c;
+
+        // Initialize BufferedImage, assuming Color[][] is already properly populated.
+        BufferedImage bufferedImage = new BufferedImage(pixels.length, pixels[0].length,
+        BufferedImage.TYPE_INT_RGB);
+
+        // Set each pixel of the BufferedImage to the color from the Color[][].
+        for (int x = 0; x < pixels.length; x++) {
+            for (int y = 0; y < pixels[x].length; y++) {
+                c = new Color(pixels[x][y]);
+                    bufferedImage.setRGB(x, y, c.getRGB());
+            }
+        }
+        return bufferedImage;
     }
     
     /**
@@ -276,7 +247,7 @@ public class AVIFrames
      * @return the histograms for each frame with the given column
      * @author Brian Pak, Chazz Young(1.0)
      */
-    public int[][][] getVerticalSTIHistograms(int col)
+    private int[][][] getVerticalSTIHistograms(int col)
     {
         final int x = getRowHeight();
         final int y = getColumnHeight();
@@ -365,6 +336,38 @@ public class AVIFrames
     {
         //Replaced by Netbeans
         return (R == 0 && G == 0 && B == 0);
+    }
+    
+    /**
+     * Get internal ImageProcessor image for manipulation
+     * @param frame the frame number
+     * @return the image as an ImageProcessor
+     * #author Chazz Young(0.0)
+     */
+    private ImageProcessor getImage(int frame)
+    {
+        if(frame > getFrameCount()){
+            System.err.println("Error, frame " + frame + " is larger than the number of frames.");
+            return null;
+        }
+        ImageProcessor img = imstack.getProcessor(frame);
+        img = img.resize(32, 32); // 32 by 32
+        return img;
+    }
+    
+    public int getFrameCount()
+    {
+        return imstack.getSize();
+    }
+    
+    private int getRowHeight()
+    {
+        return getImage(1).getWidth();
+    }
+    
+    private int getColumnHeight()
+    {
+        return getImage(1).getHeight();
     }
     
     public boolean opened()
