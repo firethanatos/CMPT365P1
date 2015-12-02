@@ -1,4 +1,4 @@
-package chpt363p1;
+package src.chpt363p1;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -95,7 +95,8 @@ public class AVIFrames
            apply to r and g*/
         int qr = (int)(r * logbase2N); // in the interval [0, 5]
         int qg = (int)(g * logbase2N); // in the interval [0, 5]
-        
+        //int qr = (int)(r * histogram.length);
+        //int qg = (int)(g * histogram[0].length);
         // increment count
         histogram[qr][qg]++;
         
@@ -113,12 +114,13 @@ public class AVIFrames
         //Get dimensions
         final int colTotal = getRowHeight(); //rowHeight = number of columns
         final float[][][] tmp = normalize(getVerticalSTIHistograms(0));
+        
         final int frame = tmp.length;
         final int r = tmp[0].length;
         final int g = tmp[0][0].length;
         
         //Array of column images
-        float[][][][] hists = new float[colTotal][frame - 1][r][g];
+        float[][][][] hists = new float[colTotal][frame][r][g];
         hists[0] = tmp;
         for(int i = 1; i < colTotal; i++){//For each column, get histogram
             hists[i] = normalize(getVerticalSTIHistograms(i));
@@ -129,7 +131,7 @@ public class AVIFrames
         for(int i = 0; i < colTotal; i++){//For each column
             for(int j = 0; j < frame - 1; j++){///For each PAIR of frames
                 float hist1[][] = hists[i][j];
-                float hist2[][] = hists[i + 1][j];
+                float hist2[][] = hists[i][j + 1];
                 greyLevel[i][j] = getHistogramIntersection(hist1, hist2);
             }
         }
@@ -145,9 +147,11 @@ public class AVIFrames
                 float t = 0.8f; //threshhold
                 Color c;
                 if(thresh){//If we want to normalize by threshhold
-                    if(f <= t){c = white;}else{c = black;}
+                    if(f <= t){c = black;}else{c = white;}
                 }else{
-                    c = new Color(f, f, f);
+                    int a = (int)(f * 255);
+                    c = new Color(a, a, a);
+                    //c = new Color(f, f, f);
                 }
                 
                 toReturn[i][j] = c.getRGB();
@@ -193,11 +197,11 @@ public class AVIFrames
         final int x = hist1.length;
         final int y = hist1[0].length;
         
-        float I = 0;
+        float I = 0.0f;
         
         for (int i = 0; i < x; i++) {// for every row
             for (int j = 0; j < y; j++) {// for every column
-                I += Math.min(hist1[i][j], hist2[i][j]);
+                I = I + Math.min(hist1[i][j], hist2[i][j]);
             }
         }
             
@@ -221,12 +225,16 @@ public class AVIFrames
         
         //Get the count of the histogram
         int total = 0;
-        for(int i = 0; i < x; i++){
+        //for(int i = 0; i < x; i++){
             for(int j = 0; j < y; j++){
                 for(int k = 0; k < z; k++){
-                    total += intarray[i][j][k];
+                    total += intarray[0][j][k];
                 }
             }
+        //}
+        
+        if(total == 0){
+            System.out.println("Error: Divide by zero in normalize");
         }
         
         //Normalize the histogram
@@ -262,7 +270,7 @@ public class AVIFrames
         float[][][] rValues = chromacity("r");
         float[][][] gValues = chromacity("g");
         
-        for (int k = 1; k <= z; k++) {//For each frame
+        for (int k = 0; k < z; k++) {//For each frame
             int[][] histogram = new int[N][N];
             
             //Fill the histogram
@@ -271,9 +279,13 @@ public class AVIFrames
                     //Get r and g
                     float r = rValues[k][col][j];
                     float g = gValues[k][col][j];
-                    
+                    int rh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    int gh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    //int rh = (int)(r * N);
+                    //int gh = (int)(g * N);
+                    histogram[rh][gh] = histogram[rh][gh] + 1;
                     //Add to histogram
-                    histogram = fillHistogram(histogram, r, g);   
+                    //histogram = fillHistogram(histogram, r, g);   
                 }
             //}
             toReturn[k] = histogram;
@@ -295,29 +307,31 @@ public class AVIFrames
         float[][][] toReturn = new float[z][x][y];
 
         ImageProcessor currImg;
-        
+        int pixel;
         // for every frame
         for (int k = 1; k <= z; k++) {
             currImg = getImage(k);
             
             for (int i = 0; i < x; i++) {// for every row
+                int debug = 1;
                 for (int j = 0; j < y; j++){// for every column
-                    int pixel = currImg.getPixel(x, y);
+                     
+                    pixel = currImg.getPixel(i, j);
                     
                     Color c = new Color(pixel);
-                    int R = c.getRed();
-                    int G = c.getGreen();
-                    int B = c.getBlue();
+                    int bigR = c.getRed();
+                    int bigG = c.getGreen();
+                    int bigB = c.getBlue();
         
-                    float r = 0;
-                    float g = 0;
+                    float r = 0.0f;
+                    float g = 0.0f;
                     // ignore B
         
                     // color must not be (0, 0, 0) to avoid divide-by-0
-                    if (!isRGBblack(R, G, B)){
+                    if (!isRGBblack(bigR, bigG, bigB)){
                         //Added float typecast as Java has weird integer division policies
-                        r = (float)R / (float)(R + G + B);
-                        g = (float)G / (float)(R + G + B);
+                        r = (float)bigR / (float)(bigR + bigG + bigB);
+                        g = (float)bigG / (float)(bigR + bigG + bigB);
                     }
                     
                     if (color.equals("r")) {
@@ -327,15 +341,17 @@ public class AVIFrames
                         toReturn[k - 1][i][j] = g;
                     }
                 }
+                
             }
+            
         }
         return toReturn;
     }
     
     private boolean isRGBblack(int R, int G, int B)
     {
-        //Replaced by Netbeans
-        return (R == 0 && G == 0 && B == 0);
+        Integer zero = new Integer(0);
+        return (zero.equals(R) && zero.equals(G) && zero.equals(B));
     }
     
     /**

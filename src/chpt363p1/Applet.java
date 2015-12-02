@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chpt363p1;
+package src.chpt363p1;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -336,20 +336,25 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_SelectFileButtonActionPerformed
 
     private void HorizontalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HorizontalSTIButtonActionPerformed
-        TextPane.append("Printing horizontal STI\n");
-        int[][] horiSTI = frames.getHorizontalSTI();
-        currImg = frames.pixels2img(horiSTI);
-        currImg = currImg.getScaledInstance(256, 256, 256);
-        //ImagePanel.setLayout(null);
-        ImageIcon img = new ImageIcon();
-        img.setImage(currImg);
-        ImageLabel.setIcon(img);
+        if(fileOpened){
+            TextPane.append("Printing horizontal STI\n");
+            int[][] horiSTI = frames.getHorizontalSTI();
+            currImg = frames.pixels2img(horiSTI);
+            currImg = currImg.getScaledInstance(256, 256, 256);
+            //ImagePanel.setLayout(null);
+            ImageIcon img = new ImageIcon();
+            img.setImage(currImg);
+            ImageLabel.setIcon(img);
         
-        validate();
-        TextPane.append("Printed!\n");
+            validate();
+            TextPane.append("Printed!\n");
+        }else{
+            TextPane.append("Error: No valid AVI file opened!\n");
+        }
     }//GEN-LAST:event_HorizontalSTIButtonActionPerformed
 
     private void VerticalSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerticalSTIButtonActionPerformed
+       if(fileOpened){
         TextPane.append("Printing vertical STI\n");
         int[][] vertSTI = frames.getVerticalSTI();
         currImg = frames.pixels2img(vertSTI);
@@ -364,6 +369,10 @@ public class Applet extends javax.swing.JFrame {
         validate();
         
         TextPane.append("Printed!\n");
+       }else{
+            TextPane.append("Error: No valid AVI file opened!\n");
+        }
+           
     }//GEN-LAST:event_VerticalSTIButtonActionPerformed
 
     private void HoriHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HoriHistSTIButtonActionPerformed
@@ -372,11 +381,21 @@ public class Applet extends javax.swing.JFrame {
 
     private void VertHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VertHistSTIButtonActionPerformed
         // TODO add your handling code here:
-       /* TextPane.append("Calculating vertical Histogram STI\n");
-        int[][][] hist = frames.getVerticalSTIHistogram();
-        int I = frames.getHistogramIntersection(hist);
+       if(fileOpened){
+            TextPane.append("Printing vertical STI diff\n");
+            int[][] vertdiffSTI = frames.getVerticalHistDifferences(false);
+            currImg = frames.pixels2img(vertdiffSTI);
+            currImg = currImg.getScaledInstance(256, 256, 256);
+            //ImagePanel.setLayout(null);
+            ImageIcon img = new ImageIcon();
+            img.setImage(currImg);
+            ImageLabel.setIcon(img);
         
-        TextPane.append("" + I);*/
+            validate();
+            TextPane.append("Printed!\n");
+        }else{
+            TextPane.append("Error: No valid AVI file opened!\n");
+        }
     }//GEN-LAST:event_VertHistSTIButtonActionPerformed
 
     /**
