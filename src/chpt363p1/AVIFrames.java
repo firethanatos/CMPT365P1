@@ -72,7 +72,7 @@ public class AVIFrames
         for(int i = 1; i < x; i++){//for each frame = 1 to end, intentional
             currImg = getImage(i);
             for(int j = 0; j < y; j++){//For each row pixel value
-                toReturn[i - 1][j] = currImg.getPixel(row, j);
+                toReturn[i - 1][j] = currImg.getPixel(j, row);
             }
         }
         return toReturn;

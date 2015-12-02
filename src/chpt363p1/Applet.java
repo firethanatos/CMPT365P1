@@ -344,8 +344,8 @@ public class Applet extends javax.swing.JFrame {
         ImageIcon img = new ImageIcon();
         img.setImage(currImg);
         ImageLabel.setIcon(img);
-        validate();
         
+        validate();
         TextPane.append("Printed!\n");
     }//GEN-LAST:event_HorizontalSTIButtonActionPerformed
 
@@ -358,6 +358,9 @@ public class Applet extends javax.swing.JFrame {
         ImageIcon img = new ImageIcon();
         img.setImage(currImg);
         ImageLabel.setIcon(img);
+        
+        
+        ImageLabel.repaint();
         validate();
         
         TextPane.append("Printed!\n");
