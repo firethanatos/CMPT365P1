@@ -486,6 +486,15 @@ public class Applet extends javax.swing.JFrame {
         Object o = threshhold.getValue();
         Number n = (Number) o;
         int i = n.intValue();
+        //Set bounds, round to 0 or 100
+        if(i < 0){
+            TextPane.append("Error, threshhold is < 0%, rounding to 0%\n");
+            i = 0;
+        }else if(i > 100){
+            TextPane.append("Error, threshhold is > 100%, rounding to 100%\n");
+            i = 100;
+        }
+        
         float f = (float)i/100.0f;
         return f;
    }
