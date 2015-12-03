@@ -1,4 +1,4 @@
-package src.chpt363p1;
+package chpt363p1;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
