@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.chpt363p1;
+package chpt363p1;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -21,7 +21,7 @@ public class Applet extends javax.swing.JFrame {
     private Image currImg;      //Image to be displayed
     private JLabel  icon; //BufferedImage representation of the image
     private boolean fileOpened; //Flag to ensure a file has been opened before continuing
-
+    private int thr;
     
     
     /**
@@ -71,6 +71,9 @@ public class Applet extends javax.swing.JFrame {
         HoriHistSTIButton = new javax.swing.JButton();
         VertHistSTIButton = new javax.swing.JButton();
         ImageLabel = new javax.swing.JLabel();
+        thresh = new javax.swing.JCheckBox();
+        threshhold = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -246,6 +249,17 @@ public class Applet extends javax.swing.JFrame {
             }
         });
 
+        thresh.setText("Threshhold");
+        thresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                threshActionPerformed(evt);
+            }
+        });
+
+        threshhold.setValue(80);
+
+        jLabel2.setText("%");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -253,19 +267,6 @@ public class Applet extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(FilePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(SelectFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(HorizontalSTIButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -274,16 +275,38 @@ public class Applet extends javax.swing.JFrame {
                         .addComponent(HoriHistSTIButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(VertHistSTIButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
+                            .addComponent(thresh)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                                .addComponent(threshhold, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)))
+                        .addGap(113, 113, 113))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(FilePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(SelectFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ImageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(20, 20, 20)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,8 +322,13 @@ public class Applet extends javax.swing.JFrame {
                     .addComponent(HorizontalSTIButton)
                     .addComponent(VerticalSTIButton)
                     .addComponent(HoriHistSTIButton)
-                    .addComponent(VertHistSTIButton))
-                .addGap(37, 37, 37)
+                    .addComponent(VertHistSTIButton)
+                    .addComponent(thresh))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(threshhold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(11, 11, 11)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -376,14 +404,27 @@ public class Applet extends javax.swing.JFrame {
     }//GEN-LAST:event_VerticalSTIButtonActionPerformed
 
     private void HoriHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HoriHistSTIButtonActionPerformed
-        // TODO add your handling code here:
+        if(fileOpened){
+            TextPane.append("Printing horizontal STI diff\n");
+            thr = (Integer) threshhold.getValue();
+            int[][] horidiffSTI = frames.getHorizontalHistDifferences(thresh.isSelected(), spinPercent());
+            currImg = frames.pixels2img(horidiffSTI);
+            currImg = currImg.getScaledInstance(256, 256, 256);
+            ImageIcon img = new ImageIcon();
+            img.setImage(currImg);
+            ImageLabel.setIcon(img);
+        
+            validate();
+            TextPane.append("Printed!\n");
+        }else{
+            TextPane.append("Error: No valid AVI file opened!\n");
+        }
     }//GEN-LAST:event_HoriHistSTIButtonActionPerformed
 
     private void VertHistSTIButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VertHistSTIButtonActionPerformed
-        // TODO add your handling code here:
        if(fileOpened){
             TextPane.append("Printing vertical STI diff\n");
-            int[][] vertdiffSTI = frames.getVerticalHistDifferences(false);
+            int[][] vertdiffSTI = frames.getVerticalHistDifferences(thresh.isSelected(), spinPercent());
             currImg = frames.pixels2img(vertdiffSTI);
             currImg = currImg.getScaledInstance(256, 256, 256);
             //ImagePanel.setLayout(null);
@@ -397,6 +438,10 @@ public class Applet extends javax.swing.JFrame {
             TextPane.append("Error: No valid AVI file opened!\n");
         }
     }//GEN-LAST:event_VertHistSTIButtonActionPerformed
+
+    private void threshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_threshActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_threshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -436,7 +481,14 @@ public class Applet extends javax.swing.JFrame {
         });
     }
     
-   
+   private float spinPercent()
+   {
+        Object o = threshhold.getValue();
+        Number n = (Number) o;
+        int i = n.intValue();
+        float f = (float)i/100.0f;
+        return f;
+   }
    
     
 
@@ -460,12 +512,15 @@ public class Applet extends javax.swing.JFrame {
     private javax.swing.JFrame jFrame9;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JCheckBox thresh;
+    private javax.swing.JSpinner threshhold;
     // End of variables declaration//GEN-END:variables
 
 }

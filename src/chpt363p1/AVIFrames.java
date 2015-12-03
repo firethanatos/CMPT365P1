@@ -1,4 +1,4 @@
-package src.chpt363p1;
+package chpt363p1;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,10 +30,6 @@ public class AVIFrames
         reader.run("");
         imstack = reader.getStack();     
     }
-    
-    
-    
-    
     
     /**
      * @return the colours from the center column of each frame with size
@@ -77,39 +73,15 @@ public class AVIFrames
         }
         return toReturn;
     }
-        
-    /**
-     * @param histogram the current histogram of size [N + 1][N + 1] where n
-     *                  equals log_2 (image height)
-     * @param r the normalized float value of r for that pixel
-     * @param g the normalized float value of g for that pixel
-     * @return histogram of every frame
-     * @author Brian Pak(1.0)
-     */
-    private int[][] fillHistogram(int[][] histogram, float r, float g)
-    {
-        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
-        
-        // r and g are in the interval [0, 1]
-        /* Added disambiguating brackets, otherwise the int typecast would only 
-           apply to r and g*/
-        int qr = (int)(r * logbase2N); // in the interval [0, 5]
-        int qg = (int)(g * logbase2N); // in the interval [0, 5]
-        //int qr = (int)(r * histogram.length);
-        //int qg = (int)(g * histogram[0].length);
-        // increment count
-        histogram[qr][qg]++;
-        
-        return histogram;
-    }
     
     /**
      * 
      * @param thresh if threshhold is true
+     * @param thr the threshhold value if necessary
      * @return an image with size [column total][frame]
      * @author Chazz Young(1.0)
      */
-    public int[][] getVerticalHistDifferences(boolean thresh)
+    public int[][] getVerticalHistDifferences(boolean thresh, float thr)
     {
         //Get dimensions
         final int colTotal = getRowHeight(); //rowHeight = number of columns
@@ -144,10 +116,67 @@ public class AVIFrames
         for(int i = 0; i < colTotal; i++){//For each column
             for(int j = 0; j < frame - 1; j++){//For each frame
                 float f = greyLevel[i][j];
+                
+                Color c;
+                if(thresh){//If we want to normalize by threshhold
+                    if(f <= thr){c = black;}else{c = white;}
+                }else{
+                    c = new Color(f, f, f);
+                }
+                
+                toReturn[i][j] = c.getRGB();
+            }
+        }
+                //Get the I value and place in toReturn 
+        return toReturn;      
+    }
+    
+    /**
+     * 
+     * @param thresh if threshhold is true
+     * @param thr the threshhold value
+     * @return an image with size [column total][frame]
+     * @author Chazz Young(1.0)
+     */
+    public int[][] getHorizontalHistDifferences(boolean thresh, float thr)
+    {
+        //Get dimensions
+        final int rowTotal = getColumnHeight(); //rowHeight = number of columns
+        final float[][][] tmp = normalize(getHorizontalSTIHistograms(0));
+        
+        final int frame = tmp.length;
+        final int r = tmp[0].length;
+        final int g = tmp[0][0].length;
+        
+        //Array of column images
+        float[][][][] hists = new float[rowTotal][frame][r][g];
+        hists[0] = tmp;
+        for(int i = 1; i < rowTotal; i++){//For each column, get histogram
+            hists[i] = normalize(getHorizontalSTIHistograms(i));
+        }
+        
+        //Get the I-values for each column and frame
+        float[][] greyLevel = new float[rowTotal][frame - 1]; 
+        for(int i = 0; i < rowTotal; i++){//For each column
+            for(int j = 0; j < frame - 1; j++){///For each PAIR of frames
+                float hist1[][] = hists[i][j];
+                float hist2[][] = hists[i][j + 1];
+                greyLevel[i][j] = getHistogramIntersection(hist1, hist2);
+            }
+        }
+        
+        Color white = new Color(255, 255, 255);
+        Color black = new Color(0, 0, 0);
+        
+        //Convert the i-values to a grey color, or black / white if threshhold
+        int[][] toReturn = new int[rowTotal][frame - 1];
+        for(int i = 0; i < rowTotal; i++){//For each column
+            for(int j = 0; j < frame - 1; j++){//For each frame
+                float f = greyLevel[i][j];
                 float t = 0.8f; //threshhold
                 Color c;
                 if(thresh){//If we want to normalize by threshhold
-                    if(f <= t){c = black;}else{c = white;}
+                    if(f <= thr){c = black;}else{c = white;}
                 }else{
                     int a = (int)(f * 255);
                     c = new Color(a, a, a);
@@ -160,6 +189,7 @@ public class AVIFrames
                 //Get the I value and place in toReturn 
         return toReturn;      
     }
+    
     
     /**
      * Taken from http://stackoverflow.com/questions/13391404/create-image-from-2d-color-array
@@ -183,6 +213,31 @@ public class AVIFrames
             }
         }
         return bufferedImage;
+    }
+    
+    /**
+     * @param histogram the current histogram of size [N + 1][N + 1] where n
+     *                  equals log_2 (image height)
+     * @param r the normalized float value of r for that pixel
+     * @param g the normalized float value of g for that pixel
+     * @return histogram of every frame
+     * @author Brian Pak(1.0)
+     */
+    private int[][] fillHistogram(int[][] histogram, float r, float g)
+    {
+        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
+        
+        // r and g are in the interval [0, 1]
+        /* Added disambiguating brackets, otherwise the int typecast would only 
+           apply to r and g*/
+        int qr = (int)(r * logbase2N); // in the interval [0, 5]
+        int qg = (int)(g * logbase2N); // in the interval [0, 5]
+        //int qr = (int)(r * histogram.length);
+        //int qg = (int)(g * histogram[0].length);
+        // increment count
+        histogram[qr][qg]++;
+        
+        return histogram;
     }
     
     /**
@@ -261,7 +316,7 @@ public class AVIFrames
         final int y = getColumnHeight();
         final int z = getFrameCount();
         
-        int logbase2N = (int)(Math.log10(getRowHeight()) / Math.log10(2));
+        int logbase2N = (int)(Math.log10(x) / Math.log10(2));
         int N = logbase2N + 1;
         
         int[][][] toReturn = new int[z][N][N];
@@ -288,6 +343,51 @@ public class AVIFrames
                     //histogram = fillHistogram(histogram, r, g);   
                 }
             //}
+            toReturn[k] = histogram;
+        }
+        return toReturn;
+    } 
+    
+    /**
+     * Now accepts row, (Chazz Young)
+     * build horizontal STI histogram
+     * @param row The row to calculate the histograms 
+     * @return the histograms for each frame with the given row
+     * @author Brian Pak, Chazz Young(1.0)
+     */
+    private int[][][] getHorizontalSTIHistograms(int row)
+    {
+        final int x = getRowHeight();
+        final int y = getColumnHeight();
+        final int z = getFrameCount();
+        
+        int logbase2N = (int)(Math.log10(y) / Math.log10(2));
+        int N = logbase2N + 1;
+        
+        int[][][] toReturn = new int[z][N][N];
+        
+        //Chromacity values
+        float[][][] rValues = chromacity("r");
+        float[][][] gValues = chromacity("g");
+        
+        for (int k = 0; k < z; k++) {//For each frame
+            int[][] histogram = new int[N][N];
+            
+            //Fill the histogram
+            for (int i = 0; i < x; i++) {// for every row
+                //for (int j = 0; j < y; j++) {// for every column
+                    //Get r and g
+                    float r = rValues[k][i][row];
+                    float g = gValues[k][i][row];
+                    int rh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    int gh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    //int rh = (int)(r * N);
+                    //int gh = (int)(g * N);
+                    histogram[rh][gh] = histogram[rh][gh] + 1;
+                    //Add to histogram
+                    //histogram = fillHistogram(histogram, r, g);   
+                //}
+            }
             toReturn[k] = histogram;
         }
         return toReturn;

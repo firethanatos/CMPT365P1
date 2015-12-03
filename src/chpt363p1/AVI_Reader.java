@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.chpt363p1;
+package chpt363p1;
 
 import ij.plugin.*;
 import ij.*;
