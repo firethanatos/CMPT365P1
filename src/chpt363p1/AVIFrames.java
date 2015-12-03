@@ -335,7 +335,7 @@ public class AVIFrames
                     float r = rValues[k][col][j];
                     float g = gValues[k][col][j];
                     int rh = (int) Math.floor(((new Float(r * N)).doubleValue()));
-                    int gh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    int gh = (int) Math.floor(((new Float(g * N)).doubleValue()));
                     //int rh = (int)(r * N);
                     //int gh = (int)(g * N);
                     histogram[rh][gh] = histogram[rh][gh] + 1;
@@ -380,7 +380,7 @@ public class AVIFrames
                     float r = rValues[k][i][row];
                     float g = gValues[k][i][row];
                     int rh = (int) Math.floor(((new Float(r * N)).doubleValue()));
-                    int gh = (int) Math.floor(((new Float(r * N)).doubleValue()));
+                    int gh = (int) Math.floor(((new Float(g * N)).doubleValue()));
                     //int rh = (int)(r * N);
                     //int gh = (int)(g * N);
                     histogram[rh][gh] = histogram[rh][gh] + 1;
