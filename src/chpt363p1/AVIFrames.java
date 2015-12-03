@@ -319,19 +319,19 @@ public class AVIFrames
                     pixel = currImg.getPixel(i, j);
                     
                     Color c = new Color(pixel);
-                    int bigR = c.getRed();
-                    int bigG = c.getGreen();
-                    int bigB = c.getBlue();
+                    int R = c.getRed();
+                    int G = c.getGreen();
+                    int B = c.getBlue();
         
                     float r = 0.0f;
                     float g = 0.0f;
                     // ignore B
         
                     // color must not be (0, 0, 0) to avoid divide-by-0
-                    if (!isRGBblack(bigR, bigG, bigB)){
+                    if (!isRGBblack(R, G, B)){
                         //Added float typecast as Java has weird integer division policies
-                        r = (float)bigR / (float)(bigR + bigG + bigB);
-                        g = (float)bigG / (float)(bigR + bigG + bigB);
+                        r = (float)R / (float)(R + G + B);
+                        g = (float)G / (float)(R + G + B);
                     }
                     
                     if (color.equals("r")) {
@@ -350,8 +350,7 @@ public class AVIFrames
     
     private boolean isRGBblack(int R, int G, int B)
     {
-        Integer zero = new Integer(0);
-        return (zero.equals(R) && zero.equals(G) && zero.equals(B));
+        return (R == 0 && G == 0 && B == 0);
     }
     
     /**
